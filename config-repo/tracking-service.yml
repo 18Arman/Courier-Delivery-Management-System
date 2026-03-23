@@ -1,0 +1,20 @@
+server:
+  port: 8083
+
+spring:
+  datasource:
+    url: jdbc:mysql://${TRACKING_DB_HOST:localhost}:${TRACKING_DB_PORT:3306}/${TRACKING_DB_NAME:smartcourier_tracking}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${TRACKING_DB_USERNAME:root}
+    password: ${TRACKING_DB_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+app:
+  storage:
+    upload-dir: ${TRACKING_UPLOAD_DIR:uploads/tracking}
+

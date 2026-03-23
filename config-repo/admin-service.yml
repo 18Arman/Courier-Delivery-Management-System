@@ -1,0 +1,16 @@
+server:
+  port: 8084
+
+spring:
+  datasource:
+    url: jdbc:mysql://${ADMIN_DB_HOST:localhost}:${ADMIN_DB_PORT:3306}/${ADMIN_DB_NAME:smartcourier_admin}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${ADMIN_DB_USERNAME:root}
+    password: ${ADMIN_DB_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+

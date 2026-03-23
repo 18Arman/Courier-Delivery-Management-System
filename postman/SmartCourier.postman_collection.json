@@ -1,0 +1,104 @@
+{
+  "info": {
+    "name": "SmartCourier Delivery Management",
+    "_postman_id": "9f53e5f2-f0a1-4b73-8b88-5c4be0a64d09",
+    "description": "Postman collection for SmartCourier backend APIs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Signup",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/gateway/auth/signup",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "gateway",
+            "auth",
+            "signup"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Aman Sharma\",\n  \"email\": \"aman@example.com\",\n  \"password\": \"Password@123\",\n  \"phoneNumber\": \"9876543210\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/gateway/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "gateway",
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"aman@example.com\",\n  \"password\": \"Password@123\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Create Delivery",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/gateway/deliveries",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "gateway",
+            "deliveries"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"serviceType\": \"EXPRESS\",\n  \"sender\": {\n    \"contactName\": \"Aman Sharma\",\n    \"phoneNumber\": \"9876543210\",\n    \"line1\": \"221 Green Street\",\n    \"city\": \"Delhi\",\n    \"state\": \"Delhi\",\n    \"postalCode\": \"110001\",\n    \"country\": \"India\"\n  },\n  \"receiver\": {\n    \"contactName\": \"Priya Singh\",\n    \"phoneNumber\": \"9988776655\",\n    \"line1\": \"17 Lake View Road\",\n    \"city\": \"Mumbai\",\n    \"state\": \"Maharashtra\",\n    \"postalCode\": \"400001\",\n    \"country\": \"India\"\n  },\n  \"parcel\": {\n    \"parcelType\": \"Documents\",\n    \"weightInKg\": 1.5,\n    \"declaredValue\": 2500,\n    \"dimensions\": \"12x8x2 cm\",\n    \"notes\": \"Handle carefully\"\n  },\n  \"pickupDate\": \"2026-03-25\"\n}"
+        }
+      }
+    }
+  ]
+}

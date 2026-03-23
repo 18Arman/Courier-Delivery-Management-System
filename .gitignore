@@ -1,0 +1,9 @@
+/target/
+/.idea/
+/.metadata/
+/.vscode/
+*.iml
+*.log
+/.DS_Store
+/uploads/
+
