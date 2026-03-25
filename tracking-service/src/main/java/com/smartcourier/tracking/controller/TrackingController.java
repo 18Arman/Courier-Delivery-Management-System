@@ -37,7 +37,7 @@ public class TrackingController {
     @GetMapping("/{trackingNumber}")
     @PreAuthorize("hasRole('CUSTOMER') or hasRole('ADMIN')")
     @Operation(summary = "Track a parcel by tracking number")
-    public ResponseEntity<List<TrackingEventResponse>> track(@PathVariable String trackingNumber) {
+    public ResponseEntity<List<TrackingEventResponse>> track(@PathVariable("trackingNumber") String trackingNumber) {
         return ResponseEntity.ok(trackingService.getTimeline(trackingNumber));
     }
 
@@ -51,8 +51,8 @@ public class TrackingController {
     @PostMapping(value = "/documents/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('CUSTOMER') or hasRole('ADMIN')")
     @Operation(summary = "Upload parcel-related documents")
-    public ResponseEntity<DocumentUploadResponse> upload(@RequestParam String trackingNumber,
-                                                         @RequestParam MultipartFile file) throws IOException {
+    public ResponseEntity<DocumentUploadResponse> upload(@RequestParam("trackingNumber") String trackingNumber,
+                                                         @RequestParam("file") MultipartFile file) throws IOException {
         return ResponseEntity.status(HttpStatus.CREATED).body(trackingService.uploadDocument(trackingNumber, file));
     }
 
@@ -66,7 +66,7 @@ public class TrackingController {
     @GetMapping("/{trackingNumber}/proof")
     @PreAuthorize("hasRole('CUSTOMER') or hasRole('ADMIN')")
     @Operation(summary = "Fetch delivery proof")
-    public ResponseEntity<DeliveryProofResponse> getProof(@PathVariable String trackingNumber) {
+    public ResponseEntity<DeliveryProofResponse> getProof(@PathVariable("trackingNumber") String trackingNumber) {
         return ResponseEntity.ok(trackingService.getProof(trackingNumber));
     }
 }

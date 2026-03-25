@@ -10,7 +10,7 @@ public record SignupRequest(
         @NotBlank @Email String email,
         @NotBlank @Size(min = 8, max = 100) String password,
         @NotBlank
-        @Pattern(regexp = "^[0-9+\\-]{10,20}$", message = "Phone number must be 10-20 digits")
+        @Pattern(regexp = "^(\\+91)?[6-9][0-9]{9}$",message="It must have 10 digits starting with 6-9 digit only!!")
         String phoneNumber
 ) {
 }

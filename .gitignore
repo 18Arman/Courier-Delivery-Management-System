@@ -1,9 +1,35 @@
-/target/
-/.idea/
-/.metadata/
-/.vscode/
-*.iml
-*.log
-/.DS_Store
-/uploads/
+# Maven / Java build output
+**/target/
+*.class
+*.jar
+*.war
+*.ear
 
+# IDE files
+.idea/
+.vscode/
+.metadata/
+**/.classpath
+**/.project
+**/.settings/
+*.iml
+
+# OS / editor noise
+.DS_Store
+**/.DS_Store
+
+# Logs and temp runtime files
+logs/
+*.log
+
+# Local env / secrets
+.env
+.env.*
+
+# Uploaded/generated local data
+uploads/
+tracking-service/uploads/
+
+# Coverage / reports generated locally
+**/jacoco.exec
+**/site/

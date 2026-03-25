@@ -20,6 +20,7 @@ public class DeliveryExceptionCase {
     private String issueDescription;
     private String resolvedBy;
     private boolean resolved;
+    private boolean downstreamSyncPending;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime resolvedAt;
 
@@ -77,6 +78,14 @@ public class DeliveryExceptionCase {
 
     public void setResolved(boolean resolved) {
         this.resolved = resolved;
+    }
+
+    public boolean isDownstreamSyncPending() {
+        return downstreamSyncPending;
+    }
+
+    public void setDownstreamSyncPending(boolean downstreamSyncPending) {
+        this.downstreamSyncPending = downstreamSyncPending;
     }
 
     public LocalDateTime getCreatedAt() {

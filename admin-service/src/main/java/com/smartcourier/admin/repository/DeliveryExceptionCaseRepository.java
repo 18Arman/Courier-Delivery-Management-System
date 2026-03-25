@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface DeliveryExceptionCaseRepository extends JpaRepository<DeliveryExceptionCase, Long> {
 
     List<DeliveryExceptionCase> findByResolvedFalseOrderByCreatedAtDesc();
-}
 
+    boolean existsByTrackingNumberAndExceptionStatusAndResolvedFalse(String trackingNumber, String exceptionStatus);
+}

@@ -2,6 +2,25 @@ server:
   port: 8084
 
 spring:
+  cache:
+    cache-names:
+      - adminDashboard
+      - adminDeliveryOverview
+      - adminOpenExceptions
+      - adminReports
+      - adminUsers
+      - adminHubs
+    caffeine:
+      spec: maximumSize=200,expireAfterWrite=5m
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
   datasource:
     url: jdbc:mysql://${ADMIN_DB_HOST:localhost}:${ADMIN_DB_PORT:3306}/${ADMIN_DB_NAME:smartcourier_admin}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: ${ADMIN_DB_USERNAME:root}
@@ -13,4 +32,3 @@ spring:
     properties:
       hibernate:
         format_sql: true
-

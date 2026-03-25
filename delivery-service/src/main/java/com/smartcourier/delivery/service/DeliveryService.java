@@ -3,6 +3,8 @@ package com.smartcourier.delivery.service;
 import com.smartcourier.delivery.dto.AddressRequest;
 import com.smartcourier.delivery.dto.CreateDeliveryRequest;
 import com.smartcourier.delivery.dto.DeliveryResponse;
+import com.smartcourier.delivery.dto.DeliveryStatsResponse;
+import com.smartcourier.delivery.dto.DeliverySummaryResponse;
 import com.smartcourier.delivery.dto.PackageRequest;
 import com.smartcourier.delivery.entity.Address;
 import com.smartcourier.delivery.entity.Delivery;
@@ -10,6 +12,7 @@ import com.smartcourier.delivery.entity.DeliveryStatus;
 import com.smartcourier.delivery.entity.PackageDetails;
 import com.smartcourier.delivery.exception.AccessDeniedException;
 import com.smartcourier.delivery.exception.ResourceNotFoundException;
+import com.smartcourier.delivery.messaging.DeliveryEventPublisher;
 import com.smartcourier.delivery.repository.DeliveryRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,9 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeliveryService {
 
     private final DeliveryRepository deliveryRepository;
+    private final DeliveryEventPublisher deliveryEventPublisher;
 
-    public DeliveryService(DeliveryRepository deliveryRepository) {
+    public DeliveryService(DeliveryRepository deliveryRepository, DeliveryEventPublisher deliveryEventPublisher) {
         this.deliveryRepository = deliveryRepository;
+        this.deliveryEventPublisher = deliveryEventPublisher;
     }
 
     @Transactional
@@ -41,7 +46,9 @@ public class DeliveryService {
         delivery.setPackageDetails(toPackageDetails(request.parcel()));
         delivery.setPickupDate(request.pickupDate());
         delivery.setCourierCharge(calculateCharge(request));
-        return toResponse(deliveryRepository.save(delivery));
+        Delivery saved = deliveryRepository.save(delivery);
+        deliveryEventPublisher.publish(saved, "DELIVERY_CREATED");
+        return toResponse(saved);
     }
 
     public List<DeliveryResponse> getMyDeliveries(String email) {
@@ -62,7 +69,32 @@ public class DeliveryService {
         Delivery delivery = deliveryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Delivery not found"));
         delivery.setStatus(status);
-        return toResponse(deliveryRepository.save(delivery));
+        Delivery saved = deliveryRepository.save(delivery);
+        deliveryEventPublisher.publish(saved, "DELIVERY_STATUS_UPDATED");
+        return toResponse(saved);
+    }
+
+    public DeliverySummaryResponse getSummaryById(Long id) {
+        Delivery delivery = deliveryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Delivery not found"));
+        return new DeliverySummaryResponse(
+                delivery.getId(),
+                delivery.getTrackingNumber(),
+                delivery.getCustomerEmail(),
+                delivery.getServiceType(),
+                delivery.getStatus(),
+                delivery.getCourierCharge(),
+                delivery.getPickupDate()
+        );
+    }
+
+    public DeliveryStatsResponse getStats() {
+        return new DeliveryStatsResponse(
+                deliveryRepository.countByStatus(DeliveryStatus.BOOKED),
+                deliveryRepository.countByStatusIn(List.of(DeliveryStatus.PICKED_UP, DeliveryStatus.IN_TRANSIT, DeliveryStatus.OUT_FOR_DELIVERY)),
+                deliveryRepository.countByStatus(DeliveryStatus.DELIVERED),
+                deliveryRepository.countByStatusIn(List.of(DeliveryStatus.DELAYED, DeliveryStatus.FAILED, DeliveryStatus.RETURNED))
+        );
     }
 
     public boolean isAdmin(UserDetails userDetails) {

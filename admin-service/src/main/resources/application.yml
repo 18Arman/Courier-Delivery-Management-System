@@ -6,6 +6,11 @@ spring:
     name: admin-service
   config:
     import: optional:configserver:http://localhost:8888
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
   datasource:
     url: jdbc:mysql://localhost:3306/smartcourier_admin?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
@@ -17,6 +22,20 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  cache:
+    cache-names:
+      - adminDashboard
+      - adminDeliveryOverview
+      - adminOpenExceptions
+      - adminReports
+      - adminUsers
+      - adminHubs
+    caffeine:
+      spec: maximumSize=200,expireAfterWrite=5m
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
 
 security:
   jwt:
@@ -28,7 +47,13 @@ management:
       exposure:
         include: health,info
 
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
-

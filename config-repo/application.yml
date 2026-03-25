@@ -2,6 +2,17 @@ security:
   jwt:
     secret: ${JWT_SECRET:ZHVtbXktc21hcnRjb3VyaWVyLXNlY3JldC1rZXktZm9yLWp3dC1zaWduaW5nLTEyMzQ1Njc4OTA=}
 
+app:
+  security:
+    allowed-origins: ${APP_SECURITY_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:4200,http://localhost:8080}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
@@ -11,4 +22,3 @@ management:
     web:
       exposure:
         include: health,info
-

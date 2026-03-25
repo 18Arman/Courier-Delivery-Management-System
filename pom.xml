@@ -10,6 +10,7 @@
     <name>SmartCourier Delivery Management System</name>
 
     <modules>
+        <module>eureka-server</module>
         <module>config-server</module>
         <module>api-gateway</module>
         <module>auth-service</module>
@@ -25,7 +26,7 @@
         <jjwt.version>0.12.6</jjwt.version>
         <maven.compiler.release>17</maven.compiler.release>
         <jacoco.version>0.8.12</jacoco.version>
-        <sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/auth-service/target/site/jacoco/jacoco.xml,${maven.multiModuleProjectDirectory}/delivery-service/target/site/jacoco/jacoco.xml,${maven.multiModuleProjectDirectory}/tracking-service/target/site/jacoco/jacoco.xml,${maven.multiModuleProjectDirectory}/admin-service/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencyManagement>

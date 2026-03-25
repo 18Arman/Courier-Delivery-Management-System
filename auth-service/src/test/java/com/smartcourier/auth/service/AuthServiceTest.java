@@ -78,5 +78,48 @@ class AuthServiceTest {
 
         assertThrows(UnauthorizedException.class, () -> authService.login(new LoginRequest(user.getEmail(), "wrong")));
     }
-}
 
+    @Test
+    void loginShouldReturnTokenForValidCredentials() {
+        User user = new User();
+        user.setId(4L);
+        user.setEmail("aman@example.com");
+        user.setFullName("Aman");
+        user.setPhoneNumber("9876543210");
+        user.setPassword("encoded");
+        user.getRoles().add(Role.ROLE_CUSTOMER);
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("Password@1", "encoded")).thenReturn(true);
+        when(jwtService.generateToken(user.getEmail(), Set.of("ROLE_CUSTOMER"))).thenReturn("jwt");
+
+        var response = authService.login(new LoginRequest(user.getEmail(), "Password@1"));
+
+        assertEquals("jwt", response.token());
+        assertEquals("Aman", response.fullName());
+    }
+
+    @Test
+    void getCurrentUserShouldReturnSummary() {
+        User user = new User();
+        user.setId(7L);
+        user.setEmail("admin@smartcourier.com");
+        user.setFullName("System Admin");
+        user.setPhoneNumber("9999999999");
+        user.setActive(true);
+        user.getRoles().add(Role.ROLE_ADMIN);
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+
+        var response = authService.getCurrentUser(user.getEmail());
+
+        assertEquals(7L, response.id());
+        assertEquals("System Admin", response.fullName());
+        assertEquals(Set.of("ROLE_ADMIN"), response.roles());
+    }
+
+    @Test
+    void loginShouldFailWhenUserMissing() {
+        when(userRepository.findByEmail("missing@example.com")).thenReturn(Optional.empty());
+
+        assertThrows(UnauthorizedException.class, () -> authService.login(new LoginRequest("missing@example.com", "Password@1")));
+    }
+}

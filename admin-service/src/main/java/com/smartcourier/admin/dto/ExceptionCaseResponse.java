@@ -10,8 +10,8 @@ public record ExceptionCaseResponse(
         String issueDescription,
         String resolvedBy,
         boolean resolved,
+        boolean downstreamSyncPending,
         LocalDateTime createdAt,
         LocalDateTime resolvedAt
 ) {
 }
-

@@ -10,6 +10,7 @@ import com.smartcourier.tracking.entity.DeliveryProof;
 import com.smartcourier.tracking.entity.DocumentRecord;
 import com.smartcourier.tracking.entity.TrackingEvent;
 import com.smartcourier.tracking.exception.ResourceNotFoundException;
+import com.smartcourier.tracking.integration.DeliveryEventMessage;
 import com.smartcourier.tracking.repository.DeliveryProofRepository;
 import com.smartcourier.tracking.repository.DocumentRecordRepository;
 import com.smartcourier.tracking.repository.TrackingEventRepository;
@@ -90,6 +91,17 @@ public class TrackingService {
         return deliveryProofRepository.findByTrackingNumber(trackingNumber)
                 .map(this::toResponse)
                 .orElseThrow(() -> new ResourceNotFoundException("Delivery proof not found"));
+    }
+
+    @Transactional
+    public void syncFromDeliveryEvent(DeliveryEventMessage message) {
+        TrackingEvent event = new TrackingEvent();
+        event.setTrackingNumber(message.getTrackingNumber());
+        event.setStatus(message.getStatus());
+        event.setLocation("System Event Bus");
+        event.setDescription("Asynchronous delivery event: " + message.getEventType());
+        event.setEventTime(message.getOccurredAt());
+        trackingEventRepository.save(event);
     }
 
     private TrackingEventResponse toResponse(TrackingEvent event) {

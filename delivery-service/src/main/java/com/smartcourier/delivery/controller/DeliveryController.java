@@ -48,7 +48,7 @@ public class DeliveryController {
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('CUSTOMER') or hasRole('ADMIN')")
     @Operation(summary = "Get delivery details by delivery id")
-    public ResponseEntity<DeliveryResponse> getById(@PathVariable Long id,
+    public ResponseEntity<DeliveryResponse> getById(@PathVariable("id") Long id,
                                                     org.springframework.security.core.Authentication authentication) {
         UserDetails userDetails = User.withUsername(authentication.getName()).password("")
                 .authorities(authentication.getAuthorities()).build();
@@ -58,7 +58,7 @@ public class DeliveryController {
     @PutMapping("/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Advance or resolve the delivery lifecycle")
-    public ResponseEntity<DeliveryResponse> updateStatus(@PathVariable Long id,
+    public ResponseEntity<DeliveryResponse> updateStatus(@PathVariable("id") Long id,
                                                          @Valid @RequestBody UpdateStatusRequest request) {
         return ResponseEntity.ok(deliveryService.updateStatus(id, request.status()));
     }

@@ -6,27 +6,26 @@ spring:
     gateway:
       routes:
         - id: auth-service
-          uri: ${AUTH_SERVICE_URL:http://localhost:8081}
+          uri: lb://auth-service
           predicates:
             - Path=/gateway/auth/**
           filters:
             - RewritePath=/gateway/auth/(?<segment>.*), /api/v1/auth/${segment}
         - id: delivery-service
-          uri: ${DELIVERY_SERVICE_URL:http://localhost:8082}
+          uri: lb://delivery-service
           predicates:
             - Path=/gateway/deliveries/**
           filters:
             - RewritePath=/gateway/deliveries/(?<segment>.*), /api/v1/deliveries/${segment}
         - id: tracking-service
-          uri: ${TRACKING_SERVICE_URL:http://localhost:8083}
+          uri: lb://tracking-service
           predicates:
             - Path=/gateway/tracking/**
           filters:
             - RewritePath=/gateway/tracking/(?<segment>.*), /api/v1/tracking/${segment}
         - id: admin-service
-          uri: ${ADMIN_SERVICE_URL:http://localhost:8084}
+          uri: lb://admin-service
           predicates:
             - Path=/gateway/admin/**
           filters:
             - RewritePath=/gateway/admin/(?<segment>.*), /api/v1/admin/${segment}
-

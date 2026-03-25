@@ -1,6 +1,7 @@
 package com.smartcourier.admin.controller;
 
 import com.smartcourier.admin.dto.DashboardResponse;
+import com.smartcourier.admin.dto.DeliverySummaryView;
 import com.smartcourier.admin.dto.ExceptionCaseRequest;
 import com.smartcourier.admin.dto.ExceptionCaseResponse;
 import com.smartcourier.admin.dto.HubRequest;
@@ -47,6 +48,12 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getOpenExceptions());
     }
 
+    @GetMapping("/deliveries/{deliveryId}/overview")
+    @Operation(summary = "Synchronously fetch live delivery details from delivery service")
+    public ResponseEntity<DeliverySummaryView> deliveryOverview(@PathVariable("deliveryId") Long deliveryId) {
+        return ResponseEntity.ok(adminService.getDeliveryOverview(deliveryId));
+    }
+
     @PostMapping("/deliveries")
     @Operation(summary = "Create an exception case for delivery monitoring")
     public ResponseEntity<ExceptionCaseResponse> createException(@Valid @RequestBody ExceptionCaseRequest request) {
@@ -55,7 +62,7 @@ public class AdminController {
 
     @PutMapping("/deliveries/{id}/resolve")
     @Operation(summary = "Resolve a delayed, failed, or returned delivery")
-    public ResponseEntity<ExceptionCaseResponse> resolve(@PathVariable Long id,
+    public ResponseEntity<ExceptionCaseResponse> resolve(@PathVariable("id") Long id,
                                                          @Valid @RequestBody ResolveExceptionRequest request) {
         return ResponseEntity.ok(adminService.resolveException(id, request.resolvedBy()));
     }

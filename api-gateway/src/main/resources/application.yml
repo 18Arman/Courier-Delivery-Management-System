@@ -12,29 +12,36 @@ spring:
         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
       routes:
         - id: auth-service
-          uri: http://localhost:8081
+          uri: lb://auth-service
           predicates:
             - Path=/gateway/auth/**
           filters:
             - RewritePath=/gateway/auth/(?<segment>.*), /api/v1/auth/${segment}
         - id: delivery-service
-          uri: http://localhost:8082
+          uri: lb://delivery-service
           predicates:
             - Path=/gateway/deliveries/**
           filters:
             - RewritePath=/gateway/deliveries/(?<segment>.*), /api/v1/deliveries/${segment}
         - id: tracking-service
-          uri: http://localhost:8083
+          uri: lb://tracking-service
           predicates:
             - Path=/gateway/tracking/**
           filters:
             - RewritePath=/gateway/tracking/(?<segment>.*), /api/v1/tracking/${segment}
         - id: admin-service
-          uri: http://localhost:8084
+          uri: lb://admin-service
           predicates:
             - Path=/gateway/admin/**
           filters:
             - RewritePath=/gateway/admin/(?<segment>.*), /api/v1/admin/${segment}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
 
 management:
   endpoints:
@@ -48,4 +55,3 @@ springdoc:
     urls:
       - name: gateway
         url: /v3/api-docs
-

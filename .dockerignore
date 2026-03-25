@@ -1,0 +1,8 @@
+.git
+.idea
+.vscode
+logs
+target
+**/target
+uploads
+**/.DS_Store
