@@ -5,11 +5,11 @@ spring:
   application:
     name: auth-service
   config:
-    import: optional:configserver:http://localhost:8888
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
   datasource:
-    url: jdbc:mysql://localhost:3306/smartcourier_auth?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: root
-    password: root
+    url: jdbc:mysql://${AUTH_DB_HOST:localhost}:${AUTH_DB_PORT:3306}/${AUTH_DB_NAME:smartcourier_auth}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${AUTH_DB_USERNAME:root}
+    password: ${AUTH_DB_PASSWORD:root}
   jpa:
     hibernate:
       ddl-auto: update

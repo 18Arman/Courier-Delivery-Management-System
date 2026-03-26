@@ -117,7 +117,7 @@ services:
         SERVICE_NAME: auth-service
     container_name: smartcourier-auth-service
     environment:
-      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      CONFIG_SERVER_URL: http://config-server:8888
       EUREKA_SERVER_URL: http://eureka-server:8761/eureka
       AUTH_DB_HOST: mysql-auth
       AUTH_DB_PORT: 3306
@@ -139,7 +139,7 @@ services:
         SERVICE_NAME: delivery-service
     container_name: smartcourier-delivery-service
     environment:
-      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      CONFIG_SERVER_URL: http://config-server:8888
       EUREKA_SERVER_URL: http://eureka-server:8761/eureka
       DELIVERY_DB_HOST: mysql-delivery
       DELIVERY_DB_PORT: 3306
@@ -166,7 +166,7 @@ services:
         SERVICE_NAME: tracking-service
     container_name: smartcourier-tracking-service
     environment:
-      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      CONFIG_SERVER_URL: http://config-server:8888
       EUREKA_SERVER_URL: http://eureka-server:8761/eureka
       TRACKING_DB_HOST: mysql-tracking
       TRACKING_DB_PORT: 3306
@@ -196,7 +196,7 @@ services:
         SERVICE_NAME: admin-service
     container_name: smartcourier-admin-service
     environment:
-      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      CONFIG_SERVER_URL: http://config-server:8888
       EUREKA_SERVER_URL: http://eureka-server:8761/eureka
       ADMIN_DB_HOST: mysql-admin
       ADMIN_DB_PORT: 3306
@@ -224,7 +224,7 @@ services:
         SERVICE_NAME: api-gateway
     container_name: smartcourier-api-gateway
     environment:
-      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      CONFIG_SERVER_URL: http://config-server:8888
       EUREKA_SERVER_URL: http://eureka-server:8761/eureka
     ports:
       - "8080:8080"

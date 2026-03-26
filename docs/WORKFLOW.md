@@ -107,7 +107,7 @@ The same files can later be moved to a GitHub-backed configuration repository an
 
 - default admin email: `admin@smartcourier.com`
 - default admin password: `Admin@123`
-- RabbitMQ username/password: `guest` / `guest`
+- RabbitMQ username/password: `guest` / `guest@123`
 - MySQL username/password: `root` / `root`
 - allowed CORS origins are configured through shared config, not wildcard `*`
 

@@ -5,16 +5,16 @@ spring:
   application:
     name: tracking-service
   config:
-    import: optional:configserver:http://localhost:8888
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
   datasource:
-    url: jdbc:mysql://localhost:3306/smartcourier_tracking?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: root
-    password: root
+    url: jdbc:mysql://${TRACKING_DB_HOST:localhost}:${TRACKING_DB_PORT:3306}/${TRACKING_DB_NAME:smartcourier_tracking}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${TRACKING_DB_USERNAME:root}
+    password: ${TRACKING_DB_PASSWORD:root}
   jpa:
     hibernate:
       ddl-auto: update
