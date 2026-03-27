@@ -3,10 +3,17 @@
 set -e
 
 PROJECT_DIR="/Users/armansoni/Spring Project/CouriesDeleiveryManagement"
+DEFAULT_SERVICES=(eureka-server config-server auth-service delivery-service tracking-service admin-service api-gateway)
 
 cd "$PROJECT_DIR"
 
-echo "Building SmartCourier service images..."
-docker compose build eureka-server config-server auth-service delivery-service tracking-service admin-service api-gateway
+if [ "$#" -gt 0 ]; then
+  SERVICES=("$@")
+else
+  SERVICES=("${DEFAULT_SERVICES[@]}")
+fi
+
+echo "Building SmartCourier service images: ${SERVICES[*]}"
+docker compose build "${SERVICES[@]}"
 
 echo "Docker images built successfully."

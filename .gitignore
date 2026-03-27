@@ -25,6 +25,7 @@ logs/
 # Local env / secrets
 .env
 .env.*
+!.env.example
 
 # Uploaded/generated local data
 uploads/

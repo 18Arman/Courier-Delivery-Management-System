@@ -3,10 +3,10 @@ services:
     image: mysql:8.4
     container_name: smartcourier-mysql-auth
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: smartcourier_auth
+      MYSQL_ROOT_PASSWORD: ${AUTH_DB_PASSWORD}
+      MYSQL_DATABASE: ${AUTH_DB_NAME}
     ports:
-      - "3307:3306"
+      - "${MYSQL_AUTH_PORT:-3307}:3306"
     volumes:
       - mysql-auth-data:/var/lib/mysql
 
@@ -14,10 +14,10 @@ services:
     image: mysql:8.4
     container_name: smartcourier-mysql-delivery
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: smartcourier_delivery
+      MYSQL_ROOT_PASSWORD: ${DELIVERY_DB_PASSWORD}
+      MYSQL_DATABASE: ${DELIVERY_DB_NAME}
     ports:
-      - "3308:3306"
+      - "${MYSQL_DELIVERY_PORT:-3308}:3306"
     volumes:
       - mysql-delivery-data:/var/lib/mysql
 
@@ -25,10 +25,10 @@ services:
     image: mysql:8.4
     container_name: smartcourier-mysql-tracking
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: smartcourier_tracking
+      MYSQL_ROOT_PASSWORD: ${TRACKING_DB_PASSWORD}
+      MYSQL_DATABASE: ${TRACKING_DB_NAME}
     ports:
-      - "3309:3306"
+      - "${MYSQL_TRACKING_PORT:-3309}:3306"
     volumes:
       - mysql-tracking-data:/var/lib/mysql
 
@@ -36,10 +36,10 @@ services:
     image: mysql:8.4
     container_name: smartcourier-mysql-admin
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: smartcourier_admin
+      MYSQL_ROOT_PASSWORD: ${ADMIN_DB_PASSWORD}
+      MYSQL_DATABASE: ${ADMIN_DB_NAME}
     ports:
-      - "3310:3306"
+      - "${MYSQL_ADMIN_PORT:-3310}:3306"
     volumes:
       - mysql-admin-data:/var/lib/mysql
 
@@ -47,9 +47,9 @@ services:
     image: postgres:16
     container_name: smartcourier-sonarqube-db
     environment:
-      POSTGRES_USER: sonar
-      POSTGRES_PASSWORD: sonar
-      POSTGRES_DB: sonarqube
+      POSTGRES_USER: ${SONAR_DB_USER}
+      POSTGRES_PASSWORD: ${SONAR_DB_PASSWORD}
+      POSTGRES_DB: ${SONAR_DB_NAME}
     volumes:
       - sonarqube-db-data:/var/lib/postgresql/data
 
@@ -59,11 +59,11 @@ services:
     depends_on:
       - sonarqube-db
     environment:
-      SONAR_JDBC_URL: jdbc:postgresql://sonarqube-db:5432/sonarqube
-      SONAR_JDBC_USERNAME: sonar
-      SONAR_JDBC_PASSWORD: sonar
+      SONAR_JDBC_URL: jdbc:postgresql://sonarqube-db:5432/${SONAR_DB_NAME}
+      SONAR_JDBC_USERNAME: ${SONAR_DB_USER}
+      SONAR_JDBC_PASSWORD: ${SONAR_DB_PASSWORD}
     ports:
-      - "9000:9000"
+      - "${SONARQUBE_PORT:-9000}:9000"
     volumes:
       - sonarqube-data:/opt/sonarqube/data
       - sonarqube-extensions:/opt/sonarqube/extensions
@@ -72,12 +72,19 @@ services:
     image: rabbitmq:3.13-management
     container_name: smartcourier-rabbitmq
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
 
+  zipkin:
+    image: openzipkin/zipkin:3
+    container_name: smartcourier-zipkin
+    ports:
+      - "${ZIPKIN_PORT:-9411}:9411"
+
   eureka-server:
+    image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-eureka-server:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: docker/Dockerfile.service
@@ -85,9 +92,10 @@ services:
         SERVICE_NAME: eureka-server
     container_name: smartcourier-eureka-server
     ports:
-      - "8761:8761"
+      - "${EUREKA_PORT:-8761}:8761"
 
   config-server:
+    image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-config-server:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: docker/Dockerfile.service
@@ -95,10 +103,11 @@ services:
         SERVICE_NAME: config-server
     container_name: smartcourier-config-server
     environment:
-      CONFIG_REPO_PATH: /config-repo
-      EUREKA_SERVER_URL: http://eureka-server:8761/eureka
+      CONFIG_REPO_PATH: ${CONFIG_REPO_PATH:-/config-repo}
+      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL_DOCKER:-http://eureka-server:8761/eureka}
+      ZIPKIN_BASE_URL: ${ZIPKIN_BASE_URL_DOCKER:-http://zipkin:9411}
     ports:
-      - "8888:8888"
+      - "${CONFIG_SERVER_PORT:-8888}:8888"
     volumes:
       - ./config-repo:/config-repo:ro
     depends_on:
@@ -108,8 +117,10 @@ services:
       - mysql-tracking
       - mysql-admin
       - rabbitmq
+      - zipkin
 
   auth-service:
+    image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-auth-service:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: docker/Dockerfile.service
@@ -117,21 +128,31 @@ services:
         SERVICE_NAME: auth-service
     container_name: smartcourier-auth-service
     environment:
-      CONFIG_SERVER_URL: http://config-server:8888
-      EUREKA_SERVER_URL: http://eureka-server:8761/eureka
-      AUTH_DB_HOST: mysql-auth
-      AUTH_DB_PORT: 3306
-      AUTH_DB_NAME: smartcourier_auth
-      AUTH_DB_USERNAME: root
-      AUTH_DB_PASSWORD: root
+      CONFIG_SERVER_URL: ${CONFIG_SERVER_URL_DOCKER:-http://config-server:8888}
+      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL_DOCKER:-http://eureka-server:8761/eureka}
+      ZIPKIN_BASE_URL: ${ZIPKIN_BASE_URL_DOCKER:-http://zipkin:9411}
+      APP_SECURITY_ALLOWED_ORIGINS: ${APP_SECURITY_ALLOWED_ORIGINS}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}
+      BOOTSTRAP_ADMIN_EMAIL: ${BOOTSTRAP_ADMIN_EMAIL}
+      BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD}
+      BOOTSTRAP_ADMIN_NAME: ${BOOTSTRAP_ADMIN_NAME}
+      BOOTSTRAP_ADMIN_PHONE: ${BOOTSTRAP_ADMIN_PHONE}
+      AUTH_DB_HOST: ${AUTH_DB_HOST_DOCKER:-mysql-auth}
+      AUTH_DB_PORT: ${AUTH_DB_PORT_DOCKER:-3306}
+      AUTH_DB_NAME: ${AUTH_DB_NAME}
+      AUTH_DB_USERNAME: ${AUTH_DB_USERNAME}
+      AUTH_DB_PASSWORD: ${AUTH_DB_PASSWORD}
     ports:
-      - "8081:8081"
+      - "${AUTH_SERVICE_PORT:-8081}:8081"
     depends_on:
       - eureka-server
       - config-server
       - mysql-auth
+      - zipkin
 
   delivery-service:
+    image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-delivery-service:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: docker/Dockerfile.service
@@ -139,26 +160,31 @@ services:
         SERVICE_NAME: delivery-service
     container_name: smartcourier-delivery-service
     environment:
-      CONFIG_SERVER_URL: http://config-server:8888
-      EUREKA_SERVER_URL: http://eureka-server:8761/eureka
-      DELIVERY_DB_HOST: mysql-delivery
-      DELIVERY_DB_PORT: 3306
-      DELIVERY_DB_NAME: smartcourier_delivery
-      DELIVERY_DB_USERNAME: root
-      DELIVERY_DB_PASSWORD: root
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_PORT: 5672
-      RABBITMQ_USERNAME: guest
-      RABBITMQ_PASSWORD: guest
+      CONFIG_SERVER_URL: ${CONFIG_SERVER_URL_DOCKER:-http://config-server:8888}
+      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL_DOCKER:-http://eureka-server:8761/eureka}
+      ZIPKIN_BASE_URL: ${ZIPKIN_BASE_URL_DOCKER:-http://zipkin:9411}
+      JWT_SECRET: ${JWT_SECRET}
+      APP_SECURITY_ALLOWED_ORIGINS: ${APP_SECURITY_ALLOWED_ORIGINS}
+      DELIVERY_DB_HOST: ${DELIVERY_DB_HOST_DOCKER:-mysql-delivery}
+      DELIVERY_DB_PORT: ${DELIVERY_DB_PORT_DOCKER:-3306}
+      DELIVERY_DB_NAME: ${DELIVERY_DB_NAME}
+      DELIVERY_DB_USERNAME: ${DELIVERY_DB_USERNAME}
+      DELIVERY_DB_PASSWORD: ${DELIVERY_DB_PASSWORD}
+      RABBITMQ_HOST: ${RABBITMQ_HOST_DOCKER:-rabbitmq}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
     ports:
-      - "8082:8082"
+      - "${DELIVERY_SERVICE_PORT:-8082}:8082"
     depends_on:
       - eureka-server
       - config-server
       - mysql-delivery
       - rabbitmq
+      - zipkin
 
   tracking-service:
+    image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-tracking-service:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: docker/Dockerfile.service
@@ -166,20 +192,23 @@ services:
         SERVICE_NAME: tracking-service
     container_name: smartcourier-tracking-service
     environment:
-      CONFIG_SERVER_URL: http://config-server:8888
-      EUREKA_SERVER_URL: http://eureka-server:8761/eureka
-      TRACKING_DB_HOST: mysql-tracking
-      TRACKING_DB_PORT: 3306
-      TRACKING_DB_NAME: smartcourier_tracking
-      TRACKING_DB_USERNAME: root
-      TRACKING_DB_PASSWORD: root
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_PORT: 5672
-      RABBITMQ_USERNAME: guest
-      RABBITMQ_PASSWORD: guest
-      TRACKING_UPLOAD_DIR: /data/uploads/tracking
+      CONFIG_SERVER_URL: ${CONFIG_SERVER_URL_DOCKER:-http://config-server:8888}
+      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL_DOCKER:-http://eureka-server:8761/eureka}
+      ZIPKIN_BASE_URL: ${ZIPKIN_BASE_URL_DOCKER:-http://zipkin:9411}
+      JWT_SECRET: ${JWT_SECRET}
+      APP_SECURITY_ALLOWED_ORIGINS: ${APP_SECURITY_ALLOWED_ORIGINS}
+      TRACKING_DB_HOST: ${TRACKING_DB_HOST_DOCKER:-mysql-tracking}
+      TRACKING_DB_PORT: ${TRACKING_DB_PORT_DOCKER:-3306}
+      TRACKING_DB_NAME: ${TRACKING_DB_NAME}
+      TRACKING_DB_USERNAME: ${TRACKING_DB_USERNAME}
+      TRACKING_DB_PASSWORD: ${TRACKING_DB_PASSWORD}
+      RABBITMQ_HOST: ${RABBITMQ_HOST_DOCKER:-rabbitmq}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      TRACKING_UPLOAD_DIR: ${TRACKING_UPLOAD_DIR:-/data/uploads/tracking}
     ports:
-      - "8083:8083"
+      - "${TRACKING_SERVICE_PORT:-8083}:8083"
     volumes:
       - tracking-uploads:/data/uploads/tracking
     depends_on:
@@ -187,8 +216,10 @@ services:
       - config-server
       - mysql-tracking
       - rabbitmq
+      - zipkin
 
   admin-service:
+    image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-admin-service:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: docker/Dockerfile.service
@@ -196,27 +227,32 @@ services:
         SERVICE_NAME: admin-service
     container_name: smartcourier-admin-service
     environment:
-      CONFIG_SERVER_URL: http://config-server:8888
-      EUREKA_SERVER_URL: http://eureka-server:8761/eureka
-      ADMIN_DB_HOST: mysql-admin
-      ADMIN_DB_PORT: 3306
-      ADMIN_DB_NAME: smartcourier_admin
-      ADMIN_DB_USERNAME: root
-      ADMIN_DB_PASSWORD: root
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_PORT: 5672
-      RABBITMQ_USERNAME: guest
-      RABBITMQ_PASSWORD: guest
+      CONFIG_SERVER_URL: ${CONFIG_SERVER_URL_DOCKER:-http://config-server:8888}
+      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL_DOCKER:-http://eureka-server:8761/eureka}
+      ZIPKIN_BASE_URL: ${ZIPKIN_BASE_URL_DOCKER:-http://zipkin:9411}
+      JWT_SECRET: ${JWT_SECRET}
+      APP_SECURITY_ALLOWED_ORIGINS: ${APP_SECURITY_ALLOWED_ORIGINS}
+      ADMIN_DB_HOST: ${ADMIN_DB_HOST_DOCKER:-mysql-admin}
+      ADMIN_DB_PORT: ${ADMIN_DB_PORT_DOCKER:-3306}
+      ADMIN_DB_NAME: ${ADMIN_DB_NAME}
+      ADMIN_DB_USERNAME: ${ADMIN_DB_USERNAME}
+      ADMIN_DB_PASSWORD: ${ADMIN_DB_PASSWORD}
+      RABBITMQ_HOST: ${RABBITMQ_HOST_DOCKER:-rabbitmq}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
     ports:
-      - "8084:8084"
+      - "${ADMIN_SERVICE_PORT:-8084}:8084"
     depends_on:
       - eureka-server
       - config-server
       - mysql-admin
       - rabbitmq
       - delivery-service
+      - zipkin
 
   api-gateway:
+    image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-api-gateway:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: docker/Dockerfile.service
@@ -224,10 +260,11 @@ services:
         SERVICE_NAME: api-gateway
     container_name: smartcourier-api-gateway
     environment:
-      CONFIG_SERVER_URL: http://config-server:8888
-      EUREKA_SERVER_URL: http://eureka-server:8761/eureka
+      CONFIG_SERVER_URL: ${CONFIG_SERVER_URL_DOCKER:-http://config-server:8888}
+      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL_DOCKER:-http://eureka-server:8761/eureka}
+      ZIPKIN_BASE_URL: ${ZIPKIN_BASE_URL_DOCKER:-http://zipkin:9411}
     ports:
-      - "8080:8080"
+      - "${API_GATEWAY_PORT:-8080}:8080"
     depends_on:
       - eureka-server
       - config-server
@@ -235,6 +272,7 @@ services:
       - delivery-service
       - tracking-service
       - admin-service
+      - zipkin
 
 volumes:
   mysql-auth-data:

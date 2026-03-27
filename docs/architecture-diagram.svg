@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980">
+  <defs>
+    <style>
+      .title { font: 700 28px Arial, sans-serif; fill: #14213d; }
+      .subtitle { font: 500 14px Arial, sans-serif; fill: #4a5568; }
+      .group { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 2; rx: 18; ry: 18; }
+      .box { fill: #ffffff; stroke: #334155; stroke-width: 2; rx: 14; ry: 14; }
+      .box-blue { fill: #e0f2fe; stroke: #0284c7; stroke-width: 2; rx: 14; ry: 14; }
+      .box-green { fill: #dcfce7; stroke: #16a34a; stroke-width: 2; rx: 14; ry: 14; }
+      .box-yellow { fill: #fef3c7; stroke: #d97706; stroke-width: 2; rx: 14; ry: 14; }
+      .box-purple { fill: #f3e8ff; stroke: #7c3aed; stroke-width: 2; rx: 14; ry: 14; }
+      .box-red { fill: #fee2e2; stroke: #dc2626; stroke-width: 2; rx: 14; ry: 14; }
+      .label { font: 700 18px Arial, sans-serif; fill: #0f172a; }
+      .small { font: 500 13px Arial, sans-serif; fill: #334155; }
+      .group-label { font: 700 18px Arial, sans-serif; fill: #1e293b; }
+      .arrow { stroke: #475569; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead); }
+      .arrow-dashed { stroke: #7c3aed; stroke-width: 2.5; fill: none; stroke-dasharray: 8 6; marker-end: url(#arrowheadPurple); }
+      .arrow-green { stroke: #16a34a; stroke-width: 2.5; fill: none; marker-end: url(#arrowheadGreen); }
+      .arrow-orange { stroke: #d97706; stroke-width: 2.5; fill: none; marker-end: url(#arrowheadOrange); }
+      .arrow-red { stroke: #dc2626; stroke-width: 2.5; fill: none; marker-end: url(#arrowheadRed); }
+      .note { font: 600 12px Arial, sans-serif; fill: #475569; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#475569"/>
+    </marker>
+    <marker id="arrowheadPurple" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#7c3aed"/>
+    </marker>
+    <marker id="arrowheadGreen" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#16a34a"/>
+    </marker>
+    <marker id="arrowheadOrange" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#d97706"/>
+    </marker>
+    <marker id="arrowheadRed" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <text x="800" y="42" text-anchor="middle" class="title">SmartCourier Delivery Management System Architecture</text>
+  <text x="800" y="66" text-anchor="middle" class="subtitle">Spring Boot Microservices • API Gateway • Eureka • Config Server • MySQL • RabbitMQ • OpenFeign • Zipkin</text>
+
+  <rect x="60" y="110" width="1480" height="120" class="group"/>
+  <text x="80" y="138" class="group-label">Client and Entry Layer</text>
+
+  <rect x="180" y="155" width="240" height="46" class="box"/>
+  <text x="300" y="183" text-anchor="middle" class="label">Browser / Postman / Swagger</text>
+
+  <rect x="650" y="145" width="300" height="66" class="box-blue"/>
+  <text x="800" y="176" text-anchor="middle" class="label">API Gateway</text>
+  <text x="800" y="196" text-anchor="middle" class="small">Port 8080 • Single entry point • Swagger dropdown</text>
+
+  <path d="M420 178 H650" class="arrow"/>
+  <text x="535" y="168" text-anchor="middle" class="note">External requests</text>
+
+  <rect x="60" y="270" width="1480" height="180" class="group"/>
+  <text x="80" y="298" class="group-label">Platform Services</text>
+
+  <rect x="150" y="325" width="220" height="76" class="box-purple"/>
+  <text x="260" y="355" text-anchor="middle" class="label">Eureka Server</text>
+  <text x="260" y="377" text-anchor="middle" class="small">Port 8761 • Service discovery</text>
+
+  <rect x="450" y="325" width="260" height="76" class="box-purple"/>
+  <text x="580" y="355" text-anchor="middle" class="label">Config Server</text>
+  <text x="580" y="377" text-anchor="middle" class="small">Port 8888 • Centralized configuration</text>
+
+  <rect x="790" y="325" width="260" height="76" class="box-purple"/>
+  <text x="920" y="355" text-anchor="middle" class="label">RabbitMQ</text>
+  <text x="920" y="377" text-anchor="middle" class="small">Ports 5672 / 15672 • Async messaging</text>
+
+  <rect x="1130" y="325" width="260" height="76" class="box-purple"/>
+  <text x="1260" y="355" text-anchor="middle" class="label">Zipkin</text>
+  <text x="1260" y="377" text-anchor="middle" class="small">Port 9411 • Distributed tracing</text>
+
+  <rect x="470" y="490" width="660" height="220" class="group"/>
+  <text x="490" y="518" class="group-label">Business Microservices</text>
+
+  <rect x="520" y="550" width="240" height="86" class="box-green"/>
+  <text x="640" y="580" text-anchor="middle" class="label">Auth Service</text>
+  <text x="640" y="602" text-anchor="middle" class="small">JWT • Signup/Login • Roles</text>
+
+  <rect x="840" y="550" width="240" height="86" class="box-green"/>
+  <text x="960" y="580" text-anchor="middle" class="label">Delivery Service</text>
+  <text x="960" y="602" text-anchor="middle" class="small">Bookings • Charges • Lifecycle</text>
+
+  <rect x="520" y="650" width="240" height="86" class="box-green"/>
+  <text x="640" y="680" text-anchor="middle" class="label">Tracking Service</text>
+  <text x="640" y="702" text-anchor="middle" class="small">Events • Documents • Proof</text>
+
+  <rect x="840" y="650" width="240" height="86" class="box-green"/>
+  <text x="960" y="680" text-anchor="middle" class="label">Admin Service</text>
+  <text x="960" y="702" text-anchor="middle" class="small">Dashboard • Reports • Exceptions</text>
+
+  <rect x="60" y="760" width="1480" height="160" class="group"/>
+  <text x="80" y="788" class="group-label">Data Layer</text>
+
+  <rect x="160" y="815" width="240" height="62" class="box-yellow"/>
+  <text x="280" y="843" text-anchor="middle" class="label">Auth MySQL</text>
+  <text x="280" y="863" text-anchor="middle" class="small">smartcourier_auth</text>
+
+  <rect x="470" y="815" width="240" height="62" class="box-yellow"/>
+  <text x="590" y="843" text-anchor="middle" class="label">Delivery MySQL</text>
+  <text x="590" y="863" text-anchor="middle" class="small">smartcourier_delivery</text>
+
+  <rect x="780" y="815" width="240" height="62" class="box-yellow"/>
+  <text x="900" y="843" text-anchor="middle" class="label">Tracking MySQL</text>
+  <text x="900" y="863" text-anchor="middle" class="small">smartcourier_tracking</text>
+
+  <rect x="1090" y="815" width="240" height="62" class="box-yellow"/>
+  <text x="1210" y="843" text-anchor="middle" class="label">Admin MySQL</text>
+  <text x="1210" y="863" text-anchor="middle" class="small">smartcourier_admin</text>
+
+  <rect x="1180" y="145" width="280" height="66" class="box-red"/>
+  <text x="1320" y="176" text-anchor="middle" class="label">Config Repo</text>
+  <text x="1320" y="196" text-anchor="middle" class="small">application.yml + service-specific YAML files</text>
+
+  <path d="M800 211 V300" class="arrow"/>
+  <text x="815" y="260" class="note">Routes via gateway</text>
+
+  <path d="M580 401 V520 H640 V550" class="arrow-dashed"/>
+  <path d="M580 401 V520 H960 V550" class="arrow-dashed"/>
+  <path d="M580 401 V620 H640 V650" class="arrow-dashed"/>
+  <path d="M580 401 V620 H960 V650" class="arrow-dashed"/>
+  <text x="608" y="474" class="note">External config</text>
+
+  <path d="M1320 211 V325 H710" class="arrow"/>
+  <text x="1200" y="240" class="note">Mounted into Config Server</text>
+
+  <path d="M260 401 V450 H640 V550" class="arrow-dashed"/>
+  <path d="M260 401 V450 H960 V550" class="arrow-dashed"/>
+  <path d="M260 401 V450 H640 V650" class="arrow-dashed"/>
+  <path d="M260 401 V450 H960 V650" class="arrow-dashed"/>
+  <path d="M260 401 V300 H650" class="arrow-dashed"/>
+  <text x="278" y="432" class="note">Register / discover</text>
+
+  <path d="M950 211 V325" class="arrow"/>
+  <text x="975" y="282" class="note">Event publishing and service traffic</text>
+
+  <path d="M960 636 V650" class="arrow-green"/>
+  <text x="1000" y="645" class="note">OpenFeign + LoadBalancer</text>
+
+  <path d="M1080 590 H1180 H1260 V401" class="arrow-green"/>
+  <path d="M760 690 H920 V401" class="arrow-orange"/>
+  <path d="M1080 690 H920 V401" class="arrow-orange"/>
+  <text x="1005" y="430" class="note">Async delivery events</text>
+
+  <path d="M640 636 V815 H280" class="arrow"/>
+  <path d="M960 636 V815 H590" class="arrow"/>
+  <path d="M640 736 V815 H900" class="arrow"/>
+  <path d="M960 736 V815 H1210" class="arrow"/>
+
+  <path d="M1260 401 V760 H1330 V145" class="arrow-red"/>
+  <path d="M1260 401 V760 H1030 V690" class="arrow-red"/>
+  <path d="M1260 401 V760 H730 V690" class="arrow-red"/>
+  <path d="M1260 401 V760 H1030 V590" class="arrow-red"/>
+  <path d="M1260 401 V760 H730 V590" class="arrow-red"/>
+  <path d="M1260 401 V210 H950" class="arrow-red"/>
+  <text x="1290" y="730" class="note">Distributed traces</text>
+
+  <text x="1485" y="940" text-anchor="end" class="subtitle">Generated for viva/demo use</text>
+</svg>

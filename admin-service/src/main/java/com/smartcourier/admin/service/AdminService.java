@@ -131,7 +131,7 @@ public class AdminService {
         return toResponse(exceptionCaseRepository.save(exceptionCase));
     }
 
-    @Cacheable(value = "adminDeliveryOverview", key = "#deliveryId")
+    @Cacheable(value = "adminDeliveryOverview", key = "#root.args[0]")
     public DeliverySummaryView getDeliveryOverview(Long deliveryId) {
         var summary = deliveryServiceFacade.fetchDeliverySummary(deliveryId);
         return new DeliverySummaryView(
