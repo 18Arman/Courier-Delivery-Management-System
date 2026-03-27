@@ -85,22 +85,16 @@ services:
 
   eureka-server:
     image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-eureka-server:${IMAGE_TAG:-latest}
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.service
-      args:
-        SERVICE_NAME: eureka-server
+    pull_policy: always
+    platform: linux/amd64
     container_name: smartcourier-eureka-server
     ports:
       - "${EUREKA_PORT:-8761}:8761"
 
   config-server:
     image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-config-server:${IMAGE_TAG:-latest}
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.service
-      args:
-        SERVICE_NAME: config-server
+    pull_policy: always
+    platform: linux/amd64
     container_name: smartcourier-config-server
     environment:
       CONFIG_REPO_PATH: ${CONFIG_REPO_PATH:-/config-repo}
@@ -121,11 +115,8 @@ services:
 
   auth-service:
     image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-auth-service:${IMAGE_TAG:-latest}
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.service
-      args:
-        SERVICE_NAME: auth-service
+    pull_policy: always
+    platform: linux/amd64
     container_name: smartcourier-auth-service
     environment:
       CONFIG_SERVER_URL: ${CONFIG_SERVER_URL_DOCKER:-http://config-server:8888}
@@ -153,11 +144,8 @@ services:
 
   delivery-service:
     image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-delivery-service:${IMAGE_TAG:-latest}
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.service
-      args:
-        SERVICE_NAME: delivery-service
+    pull_policy: always
+    platform: linux/amd64
     container_name: smartcourier-delivery-service
     environment:
       CONFIG_SERVER_URL: ${CONFIG_SERVER_URL_DOCKER:-http://config-server:8888}
@@ -185,11 +173,8 @@ services:
 
   tracking-service:
     image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-tracking-service:${IMAGE_TAG:-latest}
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.service
-      args:
-        SERVICE_NAME: tracking-service
+    pull_policy: always
+    platform: linux/amd64
     container_name: smartcourier-tracking-service
     environment:
       CONFIG_SERVER_URL: ${CONFIG_SERVER_URL_DOCKER:-http://config-server:8888}
@@ -220,11 +205,8 @@ services:
 
   admin-service:
     image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-admin-service:${IMAGE_TAG:-latest}
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.service
-      args:
-        SERVICE_NAME: admin-service
+    pull_policy: always
+    platform: linux/amd64
     container_name: smartcourier-admin-service
     environment:
       CONFIG_SERVER_URL: ${CONFIG_SERVER_URL_DOCKER:-http://config-server:8888}
@@ -253,11 +235,8 @@ services:
 
   api-gateway:
     image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-api-gateway:${IMAGE_TAG:-latest}
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.service
-      args:
-        SERVICE_NAME: api-gateway
+    pull_policy: always
+    platform: linux/amd64
     container_name: smartcourier-api-gateway
     environment:
       CONFIG_SERVER_URL: ${CONFIG_SERVER_URL_DOCKER:-http://config-server:8888}
