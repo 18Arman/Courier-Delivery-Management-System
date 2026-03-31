@@ -17,6 +17,7 @@ public class MessagingConfig {
     public static final String DELIVERY_ROUTING_KEY = "delivery.events";
     public static final String TRACKING_QUEUE = "smartcourier.tracking.delivery-events";
     public static final String ADMIN_QUEUE = "smartcourier.admin.delivery-events";
+    public static final String NOTIFICATION_QUEUE = "smartcourier.notification.delivery-events";
 
     @Bean
     public TopicExchange deliveryExchange() {
@@ -34,6 +35,11 @@ public class MessagingConfig {
     }
 
     @Bean
+    public Queue notificationDeliveryQueue() {
+        return new Queue(NOTIFICATION_QUEUE, true);
+    }
+
+    @Bean
     public Binding trackingBinding(@Qualifier("trackingDeliveryQueue") Queue trackingDeliveryQueue,
                                    TopicExchange deliveryExchange) {
         return BindingBuilder.bind(trackingDeliveryQueue).to(deliveryExchange).with(DELIVERY_ROUTING_KEY);
@@ -43,6 +49,12 @@ public class MessagingConfig {
     public Binding adminBinding(@Qualifier("adminDeliveryQueue") Queue adminDeliveryQueue,
                                 TopicExchange deliveryExchange) {
         return BindingBuilder.bind(adminDeliveryQueue).to(deliveryExchange).with(DELIVERY_ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding notificationBinding(@Qualifier("notificationDeliveryQueue") Queue notificationDeliveryQueue,
+                                       TopicExchange deliveryExchange) {
+        return BindingBuilder.bind(notificationDeliveryQueue).to(deliveryExchange).with(DELIVERY_ROUTING_KEY);
     }
 
     @Bean

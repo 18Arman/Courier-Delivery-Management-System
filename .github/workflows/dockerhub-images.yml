@@ -23,6 +23,7 @@ jobs:
           - delivery-service
           - tracking-service
           - admin-service
+          - notification-service
           - api-gateway
 
     permissions:

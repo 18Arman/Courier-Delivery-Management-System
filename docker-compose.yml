@@ -233,6 +233,33 @@ services:
       - delivery-service
       - zipkin
 
+  notification-service:
+    image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-notification-service:${IMAGE_TAG:-latest}
+    pull_policy: always
+    platform: linux/amd64
+    container_name: smartcourier-notification-service
+    environment:
+      CONFIG_SERVER_URL: ${CONFIG_SERVER_URL_DOCKER:-http://config-server:8888}
+      EUREKA_SERVER_URL: ${EUREKA_SERVER_URL_DOCKER:-http://eureka-server:8761/eureka}
+      ZIPKIN_BASE_URL: ${ZIPKIN_BASE_URL_DOCKER:-http://zipkin:9411}
+      RABBITMQ_HOST: ${RABBITMQ_HOST_DOCKER:-rabbitmq}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_PROTOCOL: ${MAIL_PROTOCOL}
+      MAIL_PROPERTIES_MAIL_SMTP_AUTH: ${MAIL_SMTP_AUTH}
+      MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: ${MAIL_SMTP_STARTTLS_ENABLE}
+      APP_MAIL_FROM: ${APP_MAIL_FROM}
+    depends_on:
+      - eureka-server
+      - config-server
+      - rabbitmq
+      - zipkin
+
   api-gateway:
     image: ${DOCKERHUB_NAMESPACE:-local}/smartcourier-api-gateway:${IMAGE_TAG:-latest}
     pull_policy: always
@@ -251,6 +278,7 @@ services:
       - delivery-service
       - tracking-service
       - admin-service
+      - notification-service
       - zipkin
 
 volumes:

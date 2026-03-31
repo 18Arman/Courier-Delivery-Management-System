@@ -17,6 +17,7 @@
         <module>delivery-service</module>
         <module>tracking-service</module>
         <module>admin-service</module>
+        <module>notification-service</module>
     </modules>
 
     <properties>

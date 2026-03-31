@@ -5,16 +5,21 @@ set -e
 PROJECT_DIR="/Users/armansoni/Spring Project/CouriesDeleiveryManagement"
 ALL_SERVICES=(
   mysql-auth mysql-delivery mysql-tracking mysql-admin
-  rabbitmq zipkin eureka-server config-server auth-service delivery-service tracking-service admin-service api-gateway
+  rabbitmq zipkin eureka-server config-server auth-service delivery-service tracking-service admin-service notification-service api-gateway
+)
+APP_SERVICES=(
+  eureka-server config-server auth-service delivery-service tracking-service admin-service notification-service api-gateway
 )
 
 cd "$PROJECT_DIR"
 
 if [ "${1:-}" = "--build" ]; then
-  echo "Building and starting SmartCourier containers..."
-  docker compose up --build -d "${ALL_SERVICES[@]}"
+  echo "Pulling latest SmartCourier application images and starting containers..."
+  docker compose pull "${APP_SERVICES[@]}"
+  docker compose up -d "${ALL_SERVICES[@]}"
 else
-  echo "Starting SmartCourier containers..."
+  echo "Pulling SmartCourier application images and starting containers..."
+  docker compose pull "${APP_SERVICES[@]}"
   docker compose up -d "${ALL_SERVICES[@]}"
 fi
 
@@ -29,7 +34,8 @@ echo "Config Server: http://localhost:8888"
 echo "Eureka Dashboard: http://localhost:8761"
 echo "RabbitMQ UI: http://localhost:15672"
 echo "Zipkin UI: http://localhost:9411"
+echo "SonarQube: run separately with 'docker compose up -d sonarqube-db sonarqube'"
 echo
-echo "Tip: use './scripts/run-all-services.sh --build' only after code changes that need fresh images."
-echo "Tip: use './scripts/build-service-images.sh <service-name>' and 'docker compose up -d <service-name>' to update one service."
+echo "Tip: use './scripts/run-all-services.sh' to pull latest Docker Hub images and start everything."
+echo "Tip: use './scripts/rebuild-services.sh <service-name>' to pull and restart only selected app services."
 echo "Use 'docker compose logs -f <service-name>' to inspect container logs."

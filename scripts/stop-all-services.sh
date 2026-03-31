@@ -8,7 +8,7 @@ cd "$PROJECT_DIR"
 
 echo "Stopping SmartCourier containers..."
 docker compose stop \
-  api-gateway admin-service tracking-service delivery-service auth-service config-server eureka-server \
+  api-gateway notification-service admin-service tracking-service delivery-service auth-service config-server eureka-server \
   zipkin rabbitmq mysql-auth mysql-delivery mysql-tracking mysql-admin
 
 echo "All managed services have been stopped."

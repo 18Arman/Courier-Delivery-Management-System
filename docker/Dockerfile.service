@@ -12,6 +12,7 @@ COPY auth-service/pom.xml auth-service/pom.xml
 COPY delivery-service/pom.xml delivery-service/pom.xml
 COPY tracking-service/pom.xml tracking-service/pom.xml
 COPY admin-service/pom.xml admin-service/pom.xml
+COPY notification-service/pom.xml notification-service/pom.xml
 
 COPY eureka-server/src eureka-server/src
 COPY config-server/src config-server/src
@@ -20,6 +21,7 @@ COPY auth-service/src auth-service/src
 COPY delivery-service/src delivery-service/src
 COPY tracking-service/src tracking-service/src
 COPY admin-service/src admin-service/src
+COPY notification-service/src notification-service/src
 
 RUN mvn -pl ${SERVICE_NAME} -am clean package -DskipTests
 
